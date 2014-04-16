@@ -46,7 +46,6 @@ class OCS {
 			$activity = array();
 			$activity['id'] = $d['activity_id'];
 			$activity['subject'] = $d['subject'];
-			$activity['message'] = $d['message'];
 			$activity['file'] = $d['file'];
 			$activity['link'] = $d['link'];
 			$activity['date'] = date('c', $d['timestamp']);

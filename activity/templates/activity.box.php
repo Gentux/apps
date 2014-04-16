@@ -41,11 +41,10 @@
 		<?php if (!$_['isGrouped']): ?>
 			<?php if ($_['event']['link']): ?><a href="<?php p($_['event']['link']) ?>"><?php endif ?>
 			<div class="activitysubject"><?php p($_['event']['subject']) ?></div>
-			<div class="activitymessage"><?php p($_['event']['message']) ?></div>
 		<?php endif ?>
 
 		<?php if (!empty($_['previewImageLink'])): ?>
-			<img class="preview" src="<?php p($_['previewImageLink']) ?>" alt="<?php p($_['event']['message']) ?>"/>
+			<img class="preview" src="<?php p($_['previewImageLink']) ?>" alt="<?php p($_['event']['subject']) ?>"/>
 		<?php endif ?>
 
 		<?php if (!$_['isGrouped'] && $_['event']['link']): ?></a><?php endif; ?>

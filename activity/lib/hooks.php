@@ -125,7 +125,7 @@ class Hooks {
 			}
 
 			$link = \OCP\Util::linkToAbsolute('files', 'index.php', array('dir' => dirname($path)));
-			Data::send('files', $user_subject, $user_params, '', array(), $path, $link, $user, $activity_type, Data::PRIORITY_HIGH);
+			Data::send('files', $user_subject, $user_params, $path, $link, $user, $activity_type);
 		}
 	}
 
@@ -187,7 +187,7 @@ class Hooks {
 		));
 		$subject = 'You shared %s with %s';// Add to l10n: $l->t('You shared %s with %s');
 		if (Data::getUserSetting($uidOwner, 'stream', Data::TYPE_SHARED)) {
-			Data::send('files', $subject, array($file_path, $params['shareWith']), '', array(), $path, $link, $uidOwner, Data::TYPE_SHARED, Data::PRIORITY_MEDIUM );
+			Data::send('files', $subject, array($file_path, $params['shareWith']), $path, $link, $uidOwner, Data::TYPE_SHARED);
 		}
 
 		// New shared user
@@ -197,7 +197,7 @@ class Hooks {
 		));
 		$subject = '%s shared %s with you';// Add to l10n: $l->t('%s shared %s with you');
 		if (Data::getUserSetting($params['shareWith'], 'stream', Data::TYPE_SHARED)) {
-			Data::send('files', $subject, array(\OCP\User::getUser(), $path), '', array(), $path, $link, $params['shareWith'], Data::TYPE_SHARED, Data::PRIORITY_MEDIUM);
+			Data::send('files', $subject, array(\OCP\User::getUser(), $path), $path, $link, $params['shareWith'], Data::TYPE_SHARED);
 		}
 	}
 
@@ -215,7 +215,7 @@ class Hooks {
 		));
 		$subject = 'You shared %s with group %s';// Add to l10n: $l->t('You shared %s with group %s');
 		if (Data::getUserSetting($uidOwner, 'stream', Data::TYPE_SHARED)) {
-			Data::send('files', $subject, array($file_path, $params['shareWith']), '', array(), $path, $link, $uidOwner, Data::TYPE_SHARED, Data::PRIORITY_MEDIUM );
+			Data::send('files', $subject, array($file_path, $params['shareWith']), $path, $link, $uidOwner, Data::TYPE_SHARED);
 		}
 
 		// Members of the new group
@@ -245,7 +245,7 @@ class Hooks {
 					'dir' => ($params['itemType'] === 'file') ? dirname($path) : $path,
 				));
 
-				Data::send('files', $subject, array(\OCP\User::getUser(), $path), '', array(), $path, $link, $user, Data::TYPE_SHARED, Data::PRIORITY_MEDIUM);
+				Data::send('files', $subject, array(\OCP\User::getUser(), $path), $path, $link, $user, Data::TYPE_SHARED);
 			}
 		}
 	}
@@ -264,7 +264,7 @@ class Hooks {
 		$subject = 'You shared %s';
 
 		if (Data::getUserSetting(\OCP\User::getUser(), 'stream', Data::TYPE_SHARED)) {
-			Data::send('files', $subject, array($path), '', array(), $path, $link, \OCP\User::getUser(), Data::TYPE_SHARED, Data::PRIORITY_MEDIUM);
+			Data::send('files', $subject, array($path), $path, $link, \OCP\User::getUser(), Data::TYPE_SHARED);
 		}
 	}
 

@@ -30,12 +30,6 @@ namespace OCA\Activity;
  */
 class Data
 {
-	const PRIORITY_VERYLOW 	= 10;
-	const PRIORITY_LOW	= 20;
-	const PRIORITY_MEDIUM	= 30;
-	const PRIORITY_HIGH	= 40;
-	const PRIORITY_VERYHIGH	= 50;
-
 	const TYPE_SHARED = 'shared';
 	const TYPE_SHARE_EXPIRED = 'share_expired';
 	const TYPE_SHARE_UNSHARED = 'share_unshared';
@@ -99,26 +93,23 @@ class Data
 
 	/**
 	 * @brief Send an event into the activity stream
+	 *
 	 * @param string $app The app where this event is associated with
 	 * @param string $subject A short description of the event
-	 * @param string $message A longer description of the event
-	 * @param string $file The file including path where this event is associated with. (optional)
-	 * @param string $link A link where this event is associated with (optional)
-	 * @return boolean
+	 * @param array  $subjectparams Array of parameters that are filled in the placeholders
+	 * @param string $file The file's name including path where this event is associated with. (optional)
+	 * @param string $link The path to display the parent folder/item of the file
+	 * @param string $affecteduser Name of the user we are sending the activity to
+	 * @param string $type Type of notification
+	 * @return bool
 	 */
-	public static function send($app, $subject, $subjectparams = array(), $message = '', $messageparams = array(), $file = '', $link = '', $affecteduser = '', $type = 0, $prio = Data::PRIORITY_MEDIUM) {
+	public static function send($app, $subject, array $subjectparams = array(), $file, $link, $affecteduser, $type) {
 		$timestamp = time();
 		$user = \OCP\User::getUser();
-		
-		if ($affecteduser === '') {
-			$auser = \OCP\User::getUser();
-		} else {
-			$auser = $affecteduser;
-		}
 
 		// store in DB
-		$query = \OCP\DB::prepare('INSERT INTO `*PREFIX*activity`(`app`, `subject`, `subjectparams`, `message`, `messageparams`, `file`, `link`, `user`, `affecteduser`, `timestamp`, `priority`, `type`)' . ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )');
-		$query->execute(array($app, $subject, serialize($subjectparams), $message, serialize($messageparams), $file, $link, $user, $auser, $timestamp, $prio, $type));
+		$query = \OCP\DB::prepare('INSERT INTO `*PREFIX*activity`(`app`, `subject`, `subjectparams`, `file`, `link`, `user`, `affecteduser`, `timestamp`, `type`)' . ' VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)');
+		$query->execute(array($app, $subject, serialize($subjectparams), $file, $link, $user, $affecteduser, $timestamp, $type));
 
 		// call the expire function only every 1000x time to preserve performance.
 		if (rand(0, 1000) == 0) {
@@ -126,7 +117,16 @@ class Data
 		}
 
 		// fire a hook so that other apps like notification systems can connect
-		\OCP\Util::emitHook('OC_Activity', 'post_event', array('app' => $app, 'subject' => $subject, 'user' => $user, 'affecteduser' => $affecteduser, 'message' => $message, 'file' => $file, 'link'=> $link, 'prio' => $prio, 'type' => $type));
+		\OCP\Util::emitHook('OC_Activity', 'post_event', array(
+			'app'			=> $app,
+			'subject'		=> $subject,
+			'subjectparams'	=> $subjectparams,
+			'user'			=> $user,
+			'affecteduser'	=> $affecteduser,
+			'file'			=> $file,
+			'link'			=> $link,
+			'type'			=> $type,
+		));
 
 		return true;
 	}
@@ -190,7 +190,7 @@ class Data
 
 		// fetch from DB
 		$query = \OCP\DB::prepare(
-			'SELECT `activity_id`, `app`, `subject`, `subjectparams`, `message`, `messageparams`, `file`, `link`, `timestamp`, `priority`, `type`, `user`, `affecteduser` '
+			'SELECT `activity_id`, `app`, `subject`, `subjectparams`, `file`, `link`, `timestamp`, `type`, `user`, `affecteduser` '
 			. ' FROM `*PREFIX*activity` '
 			. ' WHERE `affecteduser` = ? ' . $limit_activities_type
 			. ' ORDER BY `timestamp` desc',
@@ -200,7 +200,6 @@ class Data
 		$activity = array();
 		while ($row = $result->fetchRow()) {
 			$row['subject'] = Data::translation($row['app'],$row['subject'],unserialize($row['subjectparams']));
-			$row['message'] = Data::translation($row['app'],$row['message'],unserialize($row['messageparams']));
 			$activity[] = $row;
 		}
 		return $activity;
@@ -220,9 +219,9 @@ class Data
 
 		// search in DB
 		$query = \OCP\DB::prepare(
-			'SELECT `activity_id`, `app`, `subject`, `message`, `file`, `link`, `timestamp`, `priority`, `type`, `user`, `affecteduser` '
+			'SELECT `activity_id`, `app`, `subject`, `file`, `link`, `timestamp`, `type`, `user`, `affecteduser` '
 			. ' FROM `*PREFIX*activity` '
-			. 'WHERE `affecteduser` = ? AND ((`subject` LIKE ?) OR (`message` LIKE ?) OR (`file` LIKE ?)) ' . $limit_activities_type
+			. 'WHERE `affecteduser` = ? AND ((`subject` LIKE ?) OR (`file` LIKE ?)) ' . $limit_activities_type
 			. 'ORDER BY `timestamp` desc'
 			, $count);
 		$result = $query->execute(array($user, '%' . $txt . '%', '%' . $txt . '%', '%' . $txt . '%')); //$result = $query->execute(array($user,'%'.$txt.''));
@@ -230,7 +229,6 @@ class Data
 		$activity = array();
 		while ($row = $result->fetchRow()) {
 			$row['subject'] = Data::translation($row['app'],$row['subject'],unserialize($row['subjectparams']));
-			$row['message'] = Data::translation($row['app'],$row['message'],unserialize($row['messageparams']));
 			$activity[] = $row;
 		}
 		return $activity;
@@ -325,13 +323,6 @@ class Data
 			if (isset($content[$i]['link'])) xmlwriter_write_element($writer, 'guid', $content[$i]['link']);
 			if (isset($content[$i]['timestamp'])) xmlwriter_write_element($writer, 'pubDate', date('r', $content[$i]['timestamp']));
 
-			if (isset($content[$i]['message'])) {
-				xmlwriter_start_element($writer, 'description');
-				xmlwriter_start_cdata($writer);
-				xmlwriter_text($writer, $content[$i]['message']);
-				xmlwriter_end_cdata($writer);
-				xmlwriter_end_element($writer);
-			}
 			xmlwriter_end_element($writer);
 		}
 
