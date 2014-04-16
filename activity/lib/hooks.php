@@ -114,8 +114,8 @@ class Hooks {
 		$affectedUsers = self::getUserPathsFromPath($file_path);
 		$filteredStreamUsers = self::filterUsersBySetting(array_keys($affectedUsers), 'stream', $activity_type);
 		$filteredEmailUsers = self::filterUsersBySetting(array_keys($affectedUsers), 'email', $activity_type);
-		foreach ($affectedUsers as $user => $path) {
 
+		foreach ($affectedUsers as $user => $path) {
 			if ($user === \OCP\User::getUser()) {
 				$user_subject = $subject;
 				$user_params = array($path);
@@ -129,6 +129,7 @@ class Hooks {
 			if (!empty($filteredStreamUsers[$user])) {
 				Data::send('files', $user_subject, $user_params, $path, $link, $user, $activity_type);
 			}
+
 			// Add activity to mail queue
 			if (isset($filteredEmailUsers[$user])) {
 				Data::storeMail('files', $user_subject, $user_params, $user, $activity_type, time() + $filteredEmailUsers[$user]);
@@ -310,7 +311,8 @@ class Hooks {
 	 * @param array $users
 	 * @param string $method
 	 * @param string $type
-	 * @return array
+	 * @return array Returns a "username => b:true" Map for method = stream
+	 *               Returns a "username => i:batchtime" Map for method = email
 	 */
 	public static function filterUsersBySetting($users, $method, $type) {
 		if (empty($users) || !is_array($users)) return array();
@@ -340,12 +342,37 @@ class Hooks {
 			}
 		}
 
+		// Get the batch time setting from the database
+		if ($method == 'email') {
+			$chunkedFilteredUsers = array_chunk(array_keys($filteredUsers), 50);
+			foreach ($chunkedFilteredUsers as $chunk) {
+				$placeholders = (sizeof($chunk) == 50) ? $placeholders_50 : implode(',', array_fill(0, sizeof($chunk), '?'));
+
+				$query = \OCP\DB::prepare(
+					'SELECT `userid`, `configvalue` '
+					. ' FROM `*PREFIX*preferences` '
+					. ' WHERE `appid` = ? AND `configkey` = ? AND `userid` IN (' . $placeholders . ')');
+				$result = $query->execute(array_merge(array(
+					'activity',
+					'notify_setting_batchtime',
+				), $chunk));
+
+				while ($row = $result->fetchRow()) {
+					$filteredUsers[$row['userid']] = $row['configvalue'];
+				}
+			}
+		}
+
 		if (!empty($users)) {
 			// If the setting is enabled by default,
 			// we add all users that didn't set the preference yet.
 			if (\OCA\Activity\Data::getUserDefaultSetting($method, $type)) {
 				foreach ($users as $user) {
-					$filteredUsers[$user] = true;
+					if ($method == 'stream') {
+						$filteredUsers[$user] = true;
+					} else {
+						$filteredUsers[$user] = \OCA\Activity\Data::getUserDefaultSetting('setting', 'batchtime');
+					}
 				}
 			}
 		}
