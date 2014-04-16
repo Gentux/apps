@@ -1,6 +1,6 @@
 .section-antivirus .spoiler{
 	display:none;
-	margin-top:14px;
+	margin-top: 14px;
 }
 
 .shaded{
@@ -18,6 +18,6 @@
 }
 
 .section-antivirus h3{
-float: left;
-margin-top: 7px;
+	float: left;
+	margin-top: 7px;
 }
