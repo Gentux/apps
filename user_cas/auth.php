@@ -45,7 +45,7 @@
 			else {
 				phpCAS::setNoCasServerValidation();
 			}
-			$initialized_cas = true;			
+			$initialized_cas = true;
 		}
 		phpCAS::forceAuthentication();
 	}
