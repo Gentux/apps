@@ -46,6 +46,7 @@
 		<p><label for="cas_email_mapping"><?php p($l->t('Email'));?></label><input type="text" id="cas_email_mapping" name="cas_email_mapping" value="<?php p($_['cas_email_mapping']); ?>" /></p>
 		<p><label for="cas_group_mapping"><?php p($l->t('Group'));?></label><input type="text" id="cas_group_mapping" name="cas_group_mapping" value="<?php p($_['cas_group_mapping']); ?>" /></p>
 	</fieldset>
+	<input type="hidden" value="<?php p($_['requesttoken']); ?>" name="requesttoken" />
 	<input type="submit" value="Save" />
 	</div>
 
