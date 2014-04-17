@@ -32,7 +32,7 @@ class OC_USER_CAS extends OC_User_Backend {
 	public $groupMapping;
 
 	public function __construct() {
-		
+
 		$this->autocreate = OCP\Config::getAppValue('user_cas', 'cas_autocreate', false);
 		$this->updateUserData = OCP\Config::getAppValue('user_cas', 'cas_update_user_data', false);
 		$this->defaultGroup = OCP\Config::getAppValue('user_cas', 'cas_default_group', '');
@@ -51,7 +51,7 @@ class OC_USER_CAS extends OC_User_Backend {
 
 			if(!$initialized_cas) {
 
-				# phpCAS::setDebug();
+				phpCAS::setDebug('/tmp/cas.log');
 
 				phpCAS::client($casVersion,$casHostname,(int)$casPort,$casPath,false);
 
@@ -76,5 +76,15 @@ class OC_USER_CAS extends OC_User_Backend {
 		$uid = phpCAS::getUser();
 
 		return $uid;
+	}
+
+
+	public function userExists($uid) {
+
+		if(!phpCAS::isAuthenticated()) {
+			return false;
+		}
+
+		return (phpCAS::getUser() == $uid);
 	}
 }
