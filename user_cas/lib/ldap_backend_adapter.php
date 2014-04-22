@@ -22,8 +22,6 @@
  */
 
 
-require_once(__DIR__ . '/../../lib/base.php');
-
 /**
  * This class offers convenient access to the primary LDAP server used by the
  * LDAP user and group backend.
