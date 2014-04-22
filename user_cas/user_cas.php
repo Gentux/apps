@@ -78,12 +78,11 @@ class OC_USER_CAS extends OC_User_Backend {
 			return false;
 		}
 
-		//distinguish between internal and external Shibboleth users
-		//internal users log in with their LDAP (entry)uuid,
-		$adapter = new LdapBackendAdapter();
 		$uid = phpCAS::getUser();
 
 		if ($this->cas_link_to_ldap_backend) {
+			//Retrieve user in LDAP directory
+			$adapter = new LdapBackendAdapter();
 			$ocname = $adapter->getUuid($uid);
 
 			if (($uid !== false) && ($ocname !== false)) {
