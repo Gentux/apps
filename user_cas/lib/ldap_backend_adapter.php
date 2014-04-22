@@ -27,7 +27,11 @@ require_once(__DIR__ . '/../../lib/base.php');
 /**
  * This class offers convenient access to the primary LDAP server used by the
  * LDAP user and group backend.
+ *
+ * This class come from another owncloud plugins : https://github.com/AndreasErgenzinger/user_shibboleth
  */
+
+
 class LdapBackendAdapter extends \OCA\user_ldap\USER_LDAP {
 
 	private $enabled;
