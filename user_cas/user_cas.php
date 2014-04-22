@@ -22,6 +22,10 @@
  */
 
 
+/*
+ * This class come from another owncloud plugins : https://github.com/AndreasErgenzinger/user_shibboleth
+ * */
+
 require_once('lib/ldap_backend_adapter.php');
 
 
