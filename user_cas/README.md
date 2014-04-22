@@ -3,6 +3,8 @@ INTRODUCTION
 
 This App provide CAS authentication support, using the phpCAS library of Jasig.
 
+CAS authentication can be linked with user_ldap plugins to use the same backend.
+
 
 INSTALLATION
 ============

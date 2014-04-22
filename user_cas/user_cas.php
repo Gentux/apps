@@ -59,7 +59,7 @@ class OC_USER_CAS extends OC_User_Backend {
 
 				if ($this->casDebugFile !== '') {
 					phpCAS::setDebug($this->casDebugFile);
-                }
+				}
 
 				phpCAS::client($casVersion,$casHostname,(int)$casPort,$casPath,false);
 

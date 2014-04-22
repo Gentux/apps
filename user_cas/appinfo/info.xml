@@ -3,11 +3,12 @@
 	<id>user_cas</id>
 	<name>CAS user and group backend</name>
 	<description>Authenticate Users by a CAS SERVER</description>
+	<version>2.0</version>
 	<licence>AGPL</licence>
 	<author>Sixto Martin Garcia</author>
-	<require>4.93</require>
+	<require>6</require>
 	<types>
-        <prelogin/>
-        <authentication/>
+		<prelogin/>
+		<authentication/>
 	</types>
 </info>
