@@ -23,7 +23,7 @@
 
 OC_Util::checkAdminUser();
 
-$params = array('cas_server_version', 'cas_server_hostname', 'cas_server_port', 'cas_server_path', 'cas_autocreate', 'cas_link_to_ldap_backend', 'cas_update_user_data', 'cas_protected_groups', 'cas_default_group', 'cas_email_mapping', 'cas_group_mapping');
+$params = array('cas_server_version', 'cas_server_hostname', 'cas_server_port', 'cas_server_path', 'cas_autocreate', 'cas_link_to_ldap_backend', 'cas_update_user_data', 'cas_protected_groups', 'cas_default_group', 'cas_email_mapping', 'cas_group_mapping', 'cas_debug_file');
 
 OCP\Util::addscript('user_cas', 'settings');
 
@@ -60,6 +60,7 @@ $tmpl->assign( 'cas_server_path', OCP\Config::getAppValue('user_cas', 'cas_serve
 $tmpl->assign( 'cas_cert_path', OCP\Config::getAppValue('user_cas', 'cas_cer_path', ''));
 
 $tmpl->assign( 'cas_autocreate', OCP\Config::getAppValue('user_cas', 'cas_autocreate', 0));
+$tmpl->assign( 'cas_debug_file', OCP\Config::getAppValue('user_cas', 'cas_debug_file', ''));
 $tmpl->assign( 'cas_link_to_ldap_backend', OCP\Config::getAppValue('user_cas', 'cas_link_to_ldap_backend', '0'));
 $tmpl->assign( 'cas_update_user_data', OCP\Config::getAppValue('user_cas', 'cas_update_user_data', 0));
 $tmpl->assign( 'cas_protected_groups', OCP\Config::getAppValue('user_cas', 'cas_protected_groups', ''));

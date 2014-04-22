@@ -44,6 +44,7 @@ class OC_USER_CAS extends OC_User_Backend {
 		$this->protectedGroups = explode (',', str_replace(' ', '', OCP\Config::getAppValue('user_cas', 'cas_protected_groups', '')));
 		$this->mailMapping = OCP\Config::getAppValue('user_cas', 'cas_email_mapping', '');
 		$this->groupMapping = OCP\Config::getAppValue('user_cas', 'cas_group_mapping', '');
+		$this->casDebugFile = \OCP\Config::getAppValue('user_cas', 'cas_debug_file', '');
 
 		$casVersion = OCP\Config::getAppValue('user_cas', 'cas_server_version', '1.0');
 		$casHostname = OCP\Config::getAppValue('user_cas', 'cas_server_hostname', '');
@@ -56,7 +57,9 @@ class OC_USER_CAS extends OC_User_Backend {
 
 			if(!$initialized_cas) {
 
-				# phpCAS::setDebug();
+				if ($this->casDebugFile !== '') {
+					phpCAS::setDebug($this->casDebugFile);
+                }
 
 				phpCAS::client($casVersion,$casHostname,(int)$casPort,$casPath,false);
 

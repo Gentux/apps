@@ -9,6 +9,7 @@
 	        <li><a href="#casSettings-2"><?php p($l->t('Basic'));?></a></li>
 		<li><a href="#casSettings-3"><?php p($l->t('Mapping'));?></a></li>
 	</ul>
+			<li><a href="#casSettings-4"><?php p($l->t('Debug'));?></a></li>
 
 	<fieldset id="casSettings-1">
 		<p><label for="cas_server_version"><?php p($l->t('CAS Server Version'));?></label>
@@ -49,6 +50,12 @@
 	</fieldset>
 	<input type="hidden" value="<?php p($_['requesttoken']); ?>" name="requesttoken" />
 	<input type="submit" value="Save" />
+		<fieldset id="casSettings-4">
+			<p>
+				<label for="cas_debug_file"><?php p($l->t('PHP CAS log file'));?></label>
+				<input type="text" id="cas_debug_file" name="cas_debug_file" value="<?php p($_['cas_debug_file']); ?>" />
+			</p>
+		</fieldset>
 	</div>
 
 </form>
