@@ -22,7 +22,7 @@
  */
 
 
-require_once('/home/gentux/projects/ene-enercoop/apps/user_cas/lib/ldap_backend_adapter.php');
+require_once('lib/ldap_backend_adapter.php');
 
 
 class OC_USER_CAS extends OC_User_Backend {

@@ -18,8 +18,7 @@
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#require_once(__DIR__ . '/../../../lib/base.php');
-require_once('/home/gentux/Téléchargements/owncloud/owncloud/lib/base.php');
+require_once(__DIR__ . '/../../lib/base.php');
 
 /**
  * This class offers convenient access to the primary LDAP server used by the
