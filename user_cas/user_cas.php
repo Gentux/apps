@@ -34,6 +34,7 @@ class OC_USER_CAS extends OC_User_Backend {
 	public function __construct() {
 
 		$this->autocreate = OCP\Config::getAppValue('user_cas', 'cas_autocreate', false);
+		$this->cas_link_to_ldap_backend = \OCP\Config::getAppValue('user_cas', 'cas_link_to_ldap_backend', false);
 		$this->updateUserData = OCP\Config::getAppValue('user_cas', 'cas_update_user_data', false);
 		$this->defaultGroup = OCP\Config::getAppValue('user_cas', 'cas_default_group', '');
 		$this->protectedGroups = explode (',', str_replace(' ', '', OCP\Config::getAppValue('user_cas', 'cas_protected_groups', '')));
@@ -51,7 +52,7 @@ class OC_USER_CAS extends OC_User_Backend {
 
 			if(!$initialized_cas) {
 
-				phpCAS::setDebug('/tmp/cas.log');
+				# phpCAS::setDebug();
 
 				phpCAS::client($casVersion,$casHostname,(int)$casPort,$casPath,false);
 
