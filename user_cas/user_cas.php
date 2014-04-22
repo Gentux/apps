@@ -21,6 +21,10 @@
  *
  */
 
+
+require_once('/home/gentux/projects/ene-enercoop/apps/user_cas/lib/ldap_backend_adapter.php');
+
+
 class OC_USER_CAS extends OC_User_Backend {
 
 	// cached settings
@@ -74,9 +78,21 @@ class OC_USER_CAS extends OC_User_Backend {
 			return false;
 		}
 
+		//distinguish between internal and external Shibboleth users
+		//internal users log in with their LDAP (entry)uuid,
+		$adapter = new LdapBackendAdapter();
 		$uid = phpCAS::getUser();
 
-		return $uid;
+		if ($this->cas_link_to_ldap_backend) {
+			$ocname = $adapter->getUuid($uid);
+
+			if (($uid !== false) && ($ocname !== false)) {
+				return $ocname;
+			}
+		} else {
+			//external users log in with their hashed persistentID
+			return $uid;
+		}
 	}
 
 
@@ -86,6 +102,11 @@ class OC_USER_CAS extends OC_User_Backend {
 			return false;
 		}
 
-		return (phpCAS::getUser() == $uid);
+		if ($this->cas_link_to_ldap_backend) {
+			$adapter = new LdapBackendAdapter();
+			return (phpCAS::getUser() == $uid && $adapter->uuidExists($uid));
+		} else {
+			return (phpCAS::getUser() == $uid);
+		}
 	}
 }
