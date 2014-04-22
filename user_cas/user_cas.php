@@ -79,6 +79,9 @@ class OC_USER_CAS extends OC_User_Backend {
 		}
 
 		$uid = phpCAS::getUser();
+		if ($uid === false) {
+			return false;
+		}
 
 		if ($this->cas_link_to_ldap_backend) {
 			//Retrieve user in LDAP directory
