@@ -22,10 +22,13 @@
  */
 
 
-require_once('lib/ldap_backend_adapter.php');
+require_once(__DIR__ . '/lib/ldap_backend_adapter.php');
 
 
-class OC_USER_CAS extends OC_User_Backend {
+use \OCA\user_cas\lib\LdapBackendAdapter;
+
+
+class OC_USER_CAS extends \OC_User_Backend {
 
 	// cached settings
 	public $autocreate;

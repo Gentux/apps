@@ -30,6 +30,9 @@
  */
 
 
+namespace OCA\user_cas\lib;
+
+
 class LdapBackendAdapter extends \OCA\user_ldap\USER_LDAP {
 
 	private $enabled;
