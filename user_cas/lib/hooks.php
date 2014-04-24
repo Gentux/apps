@@ -26,10 +26,12 @@
 class OC_USER_CAS_Hooks {
 
 	static public function post_login($parameters) {
+		global $initialized_cas;
+
 		$uid = $parameters['uid'];
 		$casBackend = new OC_USER_CAS();
 
-		if (phpCAS::isAuthenticated()) {
+		if ($initialized_cas && $phpCAS::isAuthenticated()) {
 			$attributes = phpCAS::getAttributes();
 			$cas_uid = phpCAS::getUser();
 
@@ -85,8 +87,10 @@ class OC_USER_CAS_Hooks {
 
 
 	static public function logout($parameters) {
+		global $initialized_cas;
+
 		$casBackend = new OC_USER_CAS();
-		if (phpCAS::isAuthenticated()) {
+		if ($initialized_cas && phpCAS::isAuthenticated()) {
 			OC_Log::write('cas','Executing CAS logout: '.$parameters['uid'],OC_Log::DEBUG);
 			phpCAS::logout();
 		}

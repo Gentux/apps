@@ -79,8 +79,9 @@ class OC_USER_CAS extends \OC_User_Backend {
 
 
 	public function checkPassword($uid, $password) {
+		global $initialized_cas;
 
-		if(!phpCAS::isAuthenticated()) {
+		if(!$initialized_cas || !phpCAS::isAuthenticated()) {
 			return false;
 		}
 
@@ -105,8 +106,9 @@ class OC_USER_CAS extends \OC_User_Backend {
 
 
 	public function userExists($uid) {
+		global $initialized_cas;
 
-		if(!phpCAS::isAuthenticated()) {
+		if(!$initialized_cas || !phpCAS::isAuthenticated()) {
 			return false;
 		}
 
