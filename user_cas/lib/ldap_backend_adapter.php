@@ -95,7 +95,7 @@ class LdapBackendAdapter extends \OCA\user_ldap\USER_LDAP {
 		if (!$this->enabled) {
 			return false;
 		}
-        $this->connect();
+		$this->connect();
 		$uid = $this->access->escapeFilterPart($uid);
 
 		//find out dn of the user name
